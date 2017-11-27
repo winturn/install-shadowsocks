@@ -1,5 +1,12 @@
 #! /usr/bin/env bash
-# Operating System: Centos 7 x86_64
+
+# ==============================================================
+# Operating System  : Centos 6+ x86_64
+#                     Centos 7+ x86_64
+# Author            : win turn
+# Update time       ：2017-11-27 21:09:15
+# ==============================================================
+
 cd
 yum -y update
 yum -y install gcc
@@ -7,15 +14,18 @@ yum -y install openssl-devel
 yum -y install wget
 
 wget http://python.org/ftp/python/2.7.3/Python-2.7.3.tar.bz2
-tar -jxvf Python-2.7.3.tar.bz2 
-cd Python-2.7.3  
+tar -jxvf Python-2.7.3.tar.bz2
+cd Python-2.7.3
 ./configure
 make all
-make install 
+make install
 mv /usr/bin/python /usr/bin/python2.6.6
-ln -s /usr/local/bin/python2.7 /usr/bin/python 
+ln -s /usr/local/bin/python2.7 /usr/bin/python
 sed -i '1s/python/python2.6.6/' /usr/bin/yum
-sed -i '1s/python/python2.6.6/' /usr/libexec/urlgrabber-ext-down
+if [[ 'CentOS Linux release 7.2.1511 (Core) ' == *' 7.'* ]]
+then
+    sed -i '1s/python/python2.6.6/' /usr/libexec/urlgrabber-ext-down
+fi
 
 cd
 yum -y install python-setuptools
@@ -48,23 +58,27 @@ EOF
 ssserver -c /etc/shadowsocks.json -d start
 if [ $? -eq 0 ]
 then
-    echo "shadowsocks已启动..."
+    echo "shadowsocks running..."
 else
-    echo "shadowsocks启动异常..."
+    echo "shadowsocks fail..."
 fi
 
 echo "
-    =========================[ shadowsocks command ]==========================
-    |  启动shadowsocks服务: ssserver -c /etc/shadowsocks.json -d start        |
-    |  关闭shadowsocks服务: ssserver -c /etc/shadowsocks.json -d stop         |
-    |  重启shadowsocks服务: ssserver -c /etc/shadowsocks.json -d restart      |
-    ==========================================================================
+    ==========================[ shadowsocks command ]=================================
+    |  start   shadowsocks server: ssserver -c /etc/shadowsocks.json -d start        |
+    |  stop    shadowsocks server: ssserver -c /etc/shadowsocks.json -d stop         |
+    |  restart shadowsocks server: ssserver -c /etc/shadowsocks.json -d restart      |
+    ==================================================================================
 
-    =========================[    win_turn 提醒您   ]==========================
-    |  ip地址:   $IP_ADDR                                                     |
-    |  端 口1:   8888                                                         |
-    |  密 码1:   shadowsocks                                                  |
-    |  端 口2:   9999                                                         |
-    |  密 码2:   shadowsocks                                                  |
-    ==========================================================================
+    =========================[    win_turn remind   ]=================================
+    |                                                                                |
+    |  ip address:   $IP_ADDR                                                        |
+    |                                                                                |
+    |  port 1    :   8888                                                            |
+    |  password 1:   shadowsocks                                                     |
+    |                                                                                |
+    |  port 2    :   9999                                                            |
+    |  password 2:   shadowsocks                                                     |
+    |                                                                                |
+    ==================================================================================
 "
