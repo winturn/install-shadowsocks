@@ -1,3 +1,5 @@
+#! /usr/bin/env bash
+# Operating System: Centos 7 x86_64
 cd
 yum -y update
 yum -y install gcc
@@ -13,19 +15,17 @@ make install
 mv /usr/bin/python /usr/bin/python2.6.6
 ln -s /usr/local/bin/python2.7 /usr/bin/python 
 sed -i '1s/python/python2.6.6/' /usr/bin/yum
+sed -i '1s/python/python2.6.6/' /usr/libexec/urlgrabber-ext-down
 
 cd
-yum install python-setuptools
+yum -y install python-setuptools
 wget https://bootstrap.pypa.io/ez_setup.py -O - | python
-wget http://pypi.python.org/packages/source/d/distribute/distribute-0.6.10.tar.gz
-tar zxvf distribute-0.6.10.tar.gz
-cd distribute-0.6.10
-python setup.py install
-cd
 easy_install pip
+pip install distribute
+
 pip install shadowsocks
 
-IP_ADDR=`ifconfig | awk -F':' '/inet addr/ && NR < 8{print $2}' | cut -d' ' -f1`
+IP_ADDR=`ip addr | tail -1 | awk '{print $4}'`
 
 cat > /etc/shadowsocks.json << EOF
 {
@@ -68,4 +68,3 @@ echo "
     |  密 码2:   shadowsocks                                                  |
     ==========================================================================
 "
-
